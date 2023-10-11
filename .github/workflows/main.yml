@@ -1,0 +1,40 @@
+name: 'C++ IP sort'
+
+on:
+  push:
+    branches:
+      - main
+      - feature/github_actions
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    permissions: write-all
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          submodules: true
+      - run: cmake . -DPATCH_VERSION=${{ github.run_number }}
+      - run: cmake --build .
+      - run: cmake --build . --target package
+      - name: Create Release
+        id: create_release
+        uses: actions/create-release@vv1.10.0
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: ${{ github.run_number }}
+          release_name: Release ${{ github.run_number }}
+          draft: false
+          prerelease: false
+      - name: Upload Release Asset
+        id: upload-release-asset
+        uses: actions/upload-release-asset@vv1.10.0
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: ./ipsort-3.14.${{ github.run_number }}-Linux.deb
+          asset_name: ipsort-3.14.${{ github.run_number }}-Linux.deb
+          asset_content_type: application/vnd.debian.binary-package
