@@ -66,7 +66,7 @@ public:
   bool operator>(const IP &other) const {
     auto ita = other.ip_.begin();
     uint32_t ipl{0}, ipr{0};
-    for_each(ip_.begin(), ip_.end(), [&](auto &itb) {
+    for_each(ip_.begin(), ip_.end(), [this, &ipl, &ipr, &ita](auto &itb) {
       ip_to_uint32(ipl, itb);
       ip_to_uint32(ipr, *ita++);
     });
@@ -117,7 +117,7 @@ public:
   }
   void print(int filter) {
     for (auto ip : ip_pool) {
-      for (int i = 0; i < OCTET_COUNT; ++i) {
+      for (int i = 0; i < OCTET_COUNT; ++i) { //Не реализовал в классе IP итераторы, поэтому так
         if (+(ip.at(i)) == static_cast<uint8_t>(filter)) {
           ip.print();
           break;
