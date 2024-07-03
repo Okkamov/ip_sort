@@ -94,11 +94,7 @@ int main() {
 
     ipp.print(); // no filtering
 
-    //Для ревьюера. Честно говоря мне не нравится, как ниже выглядит код с
-    //лямбдами. нет унификации. Возможно стоит всё вынести в функциональный
-    //объект или в вариадик или в шаблонный объект принимающий в конструкторе
-    //итераторы с deduction guide? Ваше мнение?
-
+    
     vector<uint8_t> octets{1}; // ip = filter(1) by mask
     auto filter = [&](otus::IP &ip) -> bool {
       for (int i = 0; i < static_cast<int>(octets.size()); ++i)
